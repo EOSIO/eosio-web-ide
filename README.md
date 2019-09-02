@@ -13,7 +13,7 @@ You can test drive the system by accessing the IDE at https://gitpod.io/#https:/
 
 ## Opening a terminal
 
-To open a terminal, use the Terminal drop-down menu above.
+To open a terminal, use the Terminal drop-down menu in the IDE user interface.
 
 ## Building sample contract
 
