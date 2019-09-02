@@ -1,0 +1,7 @@
+# These flags are for code completion. eosio-cpp doesn't use this file.
+
+-Duint128_t=__uint128_t
+-Dint128_t=__int128_t
+-I/usr/opt/eosio.cdt/1.6.2/include/eosiolib/contracts/
+-I/usr/opt/eosio.cdt/1.6.2/include/eosiolib/core/
+-I/usr/opt/eosio.cdt/1.6.2/include/

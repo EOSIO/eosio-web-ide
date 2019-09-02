@@ -1,0 +1,12 @@
+BasedOnStyle: LLVM
+
+AlignAfterOpenBracket: AlwaysBreak
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AllowShortCaseLabelsOnASingleLine: true
+AlwaysBreakTemplateDeclarations: true
+BreakConstructorInitializers: BeforeComma
+ColumnLimit: 140
+IndentWidth: 4
+PointerAlignment: Left
+ReflowComments: false
