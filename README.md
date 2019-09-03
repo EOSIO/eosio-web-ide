@@ -9,7 +9,7 @@ Fork this repo to your personal GitHub account and point your browser to the fol
 
 You can test drive the system by accessing the IDE at https://gitpod.io/#https://github.com/EOSIO/eosio-web-ide (however you will not be able to save your work into the EOSIO/eosio-web-ide Github repository)
 
-# Follow the instructions below to work inside the IDE entvironment
+# Follow the instructions below to work inside the IDE environment
 
 ## Opening a terminal
 
