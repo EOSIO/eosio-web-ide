@@ -63,6 +63,14 @@ gp preview $(gp url 8000)
 
 ```
 
+## Building and running unit tests
+
+```
+./build-tests
+./tester
+
+```
+
 ## Resetting the chain
 
 To remove the existing chain and create another:
