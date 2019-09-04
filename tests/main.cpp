@@ -27,12 +27,9 @@ boost::unit_test::test_suite* init_unit_test_suite(int argc, char* argv[]) {
         fc::logger::get(DEFAULT_LOGGER).set_log_level(fc::log_level::off);
 
     // Register fc::exception translator
-    boost::unit_test::unit_test_monitor
-        .template register_exception_translator<fc::exception>(
-            &translate_fc_exception);
+    boost::unit_test::unit_test_monitor.template register_exception_translator<fc::exception>(&translate_fc_exception);
 
     std::srand(time(NULL));
-    std::cout << "Random number generator seeded to " << time(NULL)
-              << std::endl;
+    std::cout << "Random number generator seeded to " << time(NULL) << std::endl;
     return nullptr;
 }
