@@ -1,4 +1,4 @@
-image: eosio/history-tools:demo-theia2b
+image: eosio/eosio-web-ide:v0.1.0
 
 ports:
 - port: 3000
