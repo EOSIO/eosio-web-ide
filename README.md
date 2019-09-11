@@ -31,6 +31,8 @@ This will produce `talk.abi` and `talk.wasm`.
 
 ## Installing the contract
 
+Run this in a terminal:
+
 ```
 cleos create account eosio talk EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
 cleos set code talk talk.wasm
@@ -40,6 +42,7 @@ cleos set abi talk talk.abi
 
 ## Creating users and using the contract
 
+Run this in a terminal:
 ```
 cleos create account eosio bob EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
 cleos create account eosio jane EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
@@ -51,6 +54,7 @@ cleos push action talk post '[1001, 2000, bob, "Replying to your post"]' -p bob
 
 ## Listing the messages
 
+Run this in a terminal:
 ```
 cleos get table talk '' message
 
@@ -58,6 +62,7 @@ cleos get table talk '' message
 
 ## Viewing the fron-end decentralized web app (EOSJS):
 
+Run this in a terminal:
 ```
 gp preview $(gp url 8000)
 
