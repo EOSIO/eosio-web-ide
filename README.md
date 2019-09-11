@@ -20,7 +20,7 @@ To open a terminal, use the Terminal drop-down menu in the IDE user interface.
 
 ## Building sample contract
 
-Run this in a terminal:
+The source code for the sample smartcontract is at contract/talk.cpp within the IDE. To compile the contract, run this in a terminal:
 
 ```
 eosio-cpp contract/talk.cpp
@@ -62,7 +62,8 @@ cleos get table talk '' message
 
 ## Viewing the front-end decentralized web app (EOSJS):
 
-Run this in a terminal:
+The source code for the React WebApp is at: webapp/src/index.tsx within the IDE. To preview the WebApp run this in a terminal:
+
 ```
 gp preview $(gp url 8000)
 
