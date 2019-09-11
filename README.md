@@ -60,7 +60,7 @@ cleos get table talk '' message
 
 ```
 
-## Viewing the fron-end decentralized web app (EOSJS):
+## Viewing the front-end decentralized web app (EOSJS):
 
 Run this in a terminal:
 ```
@@ -89,6 +89,13 @@ rm -rf ~/eosio/chain
 nodeos --config-dir ~/eosio/chain/config --data-dir ~/eosio/chain/data -e -p eosio --plugin eosio::chain_api_plugin
 
 ```
+
+Note: if the web app is currently open, then it will cause errors like the following. You may ignore them:
+
+```
+FC Exception encountered while processing chain.get_table_rows
+```
+
 ## Contributing
 
 [Contributing Guide](./CONTRIBUTING.md)
