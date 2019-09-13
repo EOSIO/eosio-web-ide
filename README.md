@@ -12,7 +12,9 @@ This repository enables developers to instantiate a browser based IDE and runs t
 
 You can test drive the system by accessing the IDE at https://gitpod.io/#https://github.com/EOSIO/eosio-web-ide (however you will not be able to save your work into the EOSIO/eosio-web-ide Github repository)
 
-# Follow the instructions below to work inside the IDE environment
+# Instructions
+
+The following instructions assume that the Web IDE was started successfully (see [Setup](#setup)).
 
 ## Opening a terminal
 
