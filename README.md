@@ -22,11 +22,10 @@ To open a terminal, use the Terminal drop-down menu in the IDE user interface.
 
 ## Building sample contract
 
-The source code for the sample smartcontract is at contract/talk.cpp within the IDE. To compile the contract, run this in a terminal:
+The source code for the sample smartcontract is at `contract/talk.cpp` within the IDE. To compile the contract, run this in a terminal:
 
 ```
 eosio-cpp contract/talk.cpp
-
 ```
 
 This will produce `talk.abi` and `talk.wasm`.
@@ -39,7 +38,6 @@ Run this in a terminal:
 cleos create account eosio talk EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
 cleos set code talk talk.wasm
 cleos set abi talk talk.abi
-
 ```
 
 ## Creating users and using the contract
@@ -51,7 +49,6 @@ cleos create account eosio jane EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5G
 cleos push action talk post '[1000, 0, bob, "This is a new post"]' -p bob
 cleos push action talk post '[2000, 0, jane, "This is my first post"]' -p jane
 cleos push action talk post '[1001, 2000, bob, "Replying to your post"]' -p bob
-
 ```
 
 ## Listing the messages
@@ -59,16 +56,14 @@ cleos push action talk post '[1001, 2000, bob, "Replying to your post"]' -p bob
 Run this in a terminal:
 ```
 cleos get table talk '' message
-
 ```
 
 ## Viewing the front-end decentralized web app (EOSJS):
 
-The source code for the React WebApp is at: webapp/src/index.tsx within the IDE. To preview the WebApp run this in a terminal:
+The source code for the React WebApp is at `webapp/src/index.tsx` within the IDE. To preview the WebApp run this in a terminal:
 
 ```
 gp preview $(gp url 8000)
-
 ```
 
 ## Building and running the unit test
@@ -79,23 +74,23 @@ The source code for the unit test is at the `tests` directory within the IDE. To
 ./build-tests
 ```
 
-This will produce the `tester` binary, which can be run from the terminal to start the actual unit tests:
+This will produce the `tester` binary, which can be run from the terminal to start the actual unit test:
 
 ```
 ./tester
 ```
 
-The unit test creates the `talk_tests` test suite and verifies that the following instructions are executed without error:
+The unit test creates the `talk_tests` test suite and verifies that the following statements are executed without error:
 
 1. Create user account `talk`.
 2. Load the `talk` smart contract in the `talk` account sandbox.
 2. Create user accounts `john` and `jane`.
 3. Test the `post` action by performing the following:
-   1. Push the `post` action from `talk` to `john` with message "`post 1`" identified as `1` and addressed to message `0` (noone).  
+   1. Push the `post` action from `talk` to `john` with message "`post 1`" identified as `1` and addressed to message `0` (sent by noone).  
       This posts the message `1` from `john` to noone in the chat.
-   2. Push the `post` action from `talk` to `jane` with message "`post 2`" identified as `2` and addressed to message `0` (noone).  
+   2. Push the `post` action from `talk` to `jane` with message "`post 2`" identified as `2` and addressed to message `0` (sent by noone).  
       This posts the message `2` from `jane` to noone in the chat.
-   3. Push the `post` action from `talk` to `john` with message "`post 3: reply`" identified as `3` and addressed to message `2` (`jane`).  
+   3. Push the `post` action from `talk` to `john` with message "`post 3: reply`" identified as `3` and addressed to message `2` (sent by `jane`).  
       This posts the reply message `3` from `john` to `jane` in the chat.
 4. Test failure of the `post` action if message is addressed to a non-existant message id.
 
@@ -110,7 +105,6 @@ To remove the existing chain and create another:
 ```
 rm -rf ~/eosio/chain
 nodeos --config-dir ~/eosio/chain/config --data-dir ~/eosio/chain/data -e -p eosio --plugin eosio::chain_api_plugin
-
 ```
 
 Note: if the web app is currently open, then it will cause errors like the following. You may ignore them:
