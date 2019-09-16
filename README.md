@@ -12,7 +12,9 @@ This repository enables developers to instantiate a browser based IDE and runs t
 
 You can test drive the system by accessing the IDE at https://gitpod.io/#https://github.com/EOSIO/eosio-web-ide (however you will not be able to save your work into the EOSIO/eosio-web-ide Github repository)
 
-# Follow the instructions below to work inside the IDE environment
+# Instructions
+
+The following instructions assume that the Web IDE was started successfully (see [Setup](#setup)).
 
 ## Opening a terminal
 
@@ -20,7 +22,7 @@ To open a terminal, use the Terminal drop-down menu in the IDE user interface.
 
 ## Building sample contract
 
-The source code for the sample smartcontract is at contract/talk.cpp within the IDE. To compile the contract, run this in a terminal:
+The source code for the sample smartcontract is at `contract/talk.cpp` within the IDE. To compile the contract, run this in a terminal:
 
 ```
 eosio-cpp contract/talk.cpp
@@ -62,20 +64,42 @@ cleos get table talk '' message
 
 ## Viewing the front-end decentralized web app (EOSJS):
 
-The source code for the React WebApp is at: webapp/src/index.tsx within the IDE. To preview the WebApp run this in a terminal:
+The source code for the React WebApp is at `webapp/src/index.tsx` within the IDE. To preview the WebApp run this in a terminal:
 
 ```
 gp preview $(gp url 8000)
 
 ```
 
-## Building and running unit tests
+## Building and running the unit test
+
+The source code for the unit test is at the `tests` directory within the IDE. To build the tests, run this in the terminal:
 
 ```
 ./build-tests
+
+```
+
+This will produce the `tester` binary, which can be run from the terminal to start the actual unit test:
+
+```
 ./tester
 
 ```
+
+The unit test creates the `talk_tests` test suite and verifies that the following statements are executed without error:
+
+1. Create user account `talk`.
+2. Load the `talk` smart contract in the `talk` account sandbox.
+2. Create user accounts `john` and `jane`.
+3. Test the `post` action by performing the following:
+   1. Push the `post` action from `talk` to `john` with message "`post 1`" identified as `1` and addressed to message `0` (sent by noone).  
+      This posts the message `1` from `john` to noone in the chat.
+   2. Push the `post` action from `talk` to `jane` with message "`post 2`" identified as `2` and addressed to message `0` (sent by noone).  
+      This posts the message `2` from `jane` to noone in the chat.
+   3. Push the `post` action from `talk` to `john` with message "`post 3: reply`" identified as `3` and addressed to message `2` (sent by `jane`).  
+      This posts the reply message `3` from `john` to `jane` in the chat.
+4. Test failure of the `post` action if message is addressed to a non-existant message id.
 
 ## Resetting the chain
 
