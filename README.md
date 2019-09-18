@@ -4,7 +4,7 @@
 
 This repository enables developers to instantiate a browser based IDE and runs the required EOSIO blockchain components (nodeos, keosd, cleos) in a personal cloud instance. All custom code created by the developer is securely managed on the developer's personal GitHub account. Zero installation is required on the user's machine. User's can simply point their browser to the provided URL below and begin compiling the provided example smart contract (C++) and the associated front-end decentralized application (EOSJS), deploy the application on the blockchain, and experience the application in under a few minutes.  
 
-This EOSIO Web IDE is a combination of open source projects including Gitpod.io, Theia, Docker, EOSIO, EOSIO.CDT, EOSJS and other required components. These are combined in a convenient manner so that an EOSIO novice user can be up and running in less that 3 minutes. 
+This EOSIO Web IDE is a combination of open source and commercial projects including Gitpod.io (theia-ide.org), Docker, EOSIO, EOSIO.CDT, EOSJS, and other required components. These are combined in a convenient manner so that an EOSIO novice user can be up and running in less that 3 minutes. 
 
 # Setup
 
