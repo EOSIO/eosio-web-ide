@@ -1,10 +1,14 @@
-# EOSIO web-based integrated development environment (IDE) for decentralized applications ![EOSIO Alpha](https://img.shields.io/badge/EOSIO-Alpha-blue.svg)
+# EOSIO Quickstart Web IDE for decentralized applications ![EOSIO Alpha](https://img.shields.io/badge/EOSIO-Alpha-blue.svg)
 
 [![Software License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](./LICENSE)
 
-This repository enables developers to instantiate a browser based IDE and runs the required EOSIO blockchain components (nodeos, keosd, cleos) in a personal cloud instance. All custom code created by the developer is securely managed on the developer's personal GitHub account. Zero installation is required on the user's machine. User's can simply point their browser to the provided URL below and begin compiling the provided example smart contract (C++) and the associated front-end decentralized application (EOSJS), deploy the application on the blockchain, and experience the application in under a few minutes.  
+EOSIO Quickstart Web IDE lets developers start building full-stack EOSIO applications in a matter of minutes. 
 
-This EOSIO Web IDE is a combination of open source and commercial projects including Gitpod.io (theia-ide.org), Docker, EOSIO, EOSIO.CDT, EOSJS, and other required components. These are combined in a convenient manner so that new EOSIO developers can get their development environment set up in just a few minutes. 
+Powered by Gitpod.io and Docker, it provides developers with a personal single-node EOSIO blockchain for development and testing purposes without a need of going through advanced local environment setup. It also includes an example application with a smart contract and web frontend, connected to the blockchain. Developers can also use EOSIO tools like cleos and  eosio.cdt straight out of the box. This project requires zero installation on the user's machine. All code is stored and managed on the developer's personal GitHub account, with the changes saved automatically.
+
+We built this project with ease of use and simplicity in mind. It can be used by new developers trying out or learning EOSIO, as well as advanced developers and teams. It is especially useful in the environments where users don't have full control over the systems they work on (universities, banks, government organizations, etc.) or when they have lower-than-required computer specs to run EOSIO locally.
+
+We hope you will find this project useful and welcome feedback on future improvements.
 
 # Setup
 
