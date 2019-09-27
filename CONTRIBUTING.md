@@ -1,4 +1,4 @@
-# Contributing to EOSIO Quickstart Web 
+# Contributing to EOSIO Quickstart Web IDE
 
 Interested in contributing? That's awesome! Here are some guidelines to get started quickly and easily:
 
