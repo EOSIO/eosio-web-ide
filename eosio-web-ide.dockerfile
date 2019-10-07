@@ -101,8 +101,8 @@ run git clone https://github.com/EOSIO/eos.git \
 user root
 workdir /root
 run apt-get update \
- && wget https://github.com/EOSIO/eosio.cdt/releases/download/v1.6.2/eosio.cdt_1.6.2-1-ubuntu-18.04_amd64.deb \
- && apt-get install -y ./eosio.cdt_1.6.2-1-ubuntu-18.04_amd64.deb \
+ && wget https://github.com/EOSIO/eosio.cdt/releases/download/v1.6.3/eosio.cdt_1.6.3-1-ubuntu-18.04_amd64.deb \
+ && apt-get install -y ./eosio.cdt_1.6.3-1-ubuntu-18.04_amd64.deb \
  && rm -rf *.deb /var/lib/apt/lists/* \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
