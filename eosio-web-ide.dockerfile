@@ -1,4 +1,4 @@
-# docker build -t eosio/eosio-web-ide:v0.1.0 -f eosio-web-ide.dockerfile .
+# docker build -t eosio/eosio-web-ide:v0.1.1 -f eosio-web-ide.dockerfile .
 
 from ubuntu:18.04
 
