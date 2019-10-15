@@ -6,7 +6,7 @@
 
 using namespace eosio;
 
-CONTRACT pvp : public eosio::contract {
+class [[eosio::contract("pvp")]] pvp : public eosio::contract {
 
   private:
     struct [[eosio::table]] st_board {
@@ -149,15 +149,16 @@ CONTRACT pvp : public eosio::contract {
     // Use contract's constructor
     using contract::contract;
 
-    ACTION transfer(name from, name to, asset quantity, std::string memo) {
+    [[eosio::on_notify("eosio.token::transfer")]]
+    void transfer(name from, name to, asset quantity, std::string memo) {
 
         if (from == lord) {
             return ;
         }
-        require_auth(_self);
+        require_auth(get_self());
 
         eosio::check(from != to, "cannot transfer to self");
-        eosio::check(_self == to, "must transfer to this contract");
+        eosio::check(get_self() == to, "must transfer to this contract");
         eosio::check(memo.size() <= 256, "memo must smaller than 256");
         eosio::check(quantity.symbol == eosio::symbol("EOS", 4), "only accepts EOS");
         eosio::check(quantity.is_valid(), "invalid token transfer");
@@ -198,7 +199,7 @@ CONTRACT pvp : public eosio::contract {
         // bet_tables bettable(_code, _code.value);
         auto bet = bet_table.find(table_id);
         if (bet == bet_table.end()) {
-            bet_table.emplace(_self, [&](auto& bet) {
+            bet_table.emplace(get_self(), [&](auto& bet) {
                 bet.id         = table_id;
                 bet.valid_time = next();
                 bet.quantity   = quantity;
@@ -217,7 +218,7 @@ CONTRACT pvp : public eosio::contract {
             eosio::check(player_hash == bet->p1_hash, "must match player hash");
             eosio::check(user_hash == bet->p2_hash, "must match user hash");
             eosio::check(table_hash == bet->table_hash, "must match table hash");
-            bet_table.modify(bet, _self, [&](auto& bet) {
+            bet_table.modify(bet, get_self(), [&](auto& bet) {
                 bet.p2_name = from;
                 bet.p2_seed = user_seed;
             });
