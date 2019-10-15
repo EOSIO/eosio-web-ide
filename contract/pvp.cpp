@@ -6,67 +6,66 @@
 
 using namespace eosio;
 
-struct [[eosio::table("board"), eosio::contract("pvp")]] board {
-    // 仅有一条记录
-    uint64_t id;
-    // 登顶时间
-    time_point top_time;
-    // 目前积累的奖赏
-    asset pool;
-    // 当前头部用户
-    name player_name;
-    // 头部用户投注额分红后进行减半操作
-    asset quantity;
-    // 上次分红的时间。
-    time_point last_time;
-
-    uint64_t primary_key() const { return id; }
-};
-using board_table = eosio::multi_index<"board"_n, board>;
-
-// typedef eosio::multi_index<N(表名),表的对象类型> 实例化变量名
-//typedef eosio::multi_index<"boardtablea"_n, board_table> board_tables;
-
-struct [[eosio::table("bet"), eosio::contract("pvp")]] bet {
-    // 桌子的标识
-    uint64_t id;
-    // 有效时间
-    time_point valid_time;
-    // 投注额
-    asset quantity;
-    // 桌子的哈希
-    std::string table_hash;
-    // 玩家1名称
-    name p1_name;
-    // 玩家2名称
-    name p2_name;
-    // 玩家1哈希
-    std::string p1_hash;
-    // 玩家2哈希
-    std::string p2_hash;
-    // 桌子的种子
-    std::string table_seed;
-    // 玩家1种子
-    std::string p1_seed;
-    // 玩家2种子
-    std::string p2_seed;
-
-    uint64_t primary_key() const { return id; }
-};
-using bet_table = eosio::multi_index<"bet"_n, bet>;
-//typedef eosio::multi_index<"bettablea"_n, bet_table> bet_tables;
+#define N(X)        eosio::name{#X}
 
 class pvp : eosio::contract {
 
-  public:
-    // Use contract's constructor
-    using contract::contract;
+  private:
+    struct [[eosio::table]] st_board {
+        // 仅有一条记录
+        uint64_t id;
+        // 登顶时间
+        time_point top_time;
+        // 目前积累的奖赏
+        asset pool;
+        // 当前头部用户
+        name player_name;
+        // 头部用户投注额分红后进行减半操作
+        asset quantity;
+        // 上次分红的时间。
+        time_point last_time;
+
+        uint64_t primary_key() const { return id; }
+    };
+    typedef multi_index<"board"_n, st_board> tb_board;
+
+    // typedef eosio::multi_index<N(表名),表的对象类型> 实例化变量名
+    //typedef eosio::multi_index<"boardtablea"_n, board_table> board_tables;
+
+    struct [[eosio::table]] st_bet {
+        // 桌子的标识
+        uint64_t id;
+        // 有效时间
+        time_point valid_time;
+        // 投注额
+        asset quantity;
+        // 桌子的哈希
+        std::string table_hash;
+        // 玩家1名称
+        name p1_name;
+        // 玩家2名称
+        name p2_name;
+        // 玩家1哈希
+        std::string p1_hash;
+        // 玩家2哈希
+        std::string p2_hash;
+        // 桌子的种子
+        std::string table_seed;
+        // 玩家1种子
+        std::string p1_seed;
+        // 玩家2种子
+        std::string p2_seed;
+
+        uint64_t primary_key() const { return id; }
+    };
+    typedef multi_index<"bet"_n, st_bet> tb_bet;
+    //typedef eosio::multi_index<"bettablea"_n, bet_table> bet_tables;
 
     // Contract network
     const symbol network_symbol = symbol("EOS", 4);
 
-    const name& lord          = "suwzhaoihuan"_n;
-    const name& wallet        = "pvpbetwallet"_n;
+    const name lord          = "suwzhaoihuan"_n;
+    const name wallet        = "pvpbetwallet"_n;
     const int   values[16][3] = {{1000, 1960, 40},
                                {1960, 3840, 80},
                                {3840, 7520, 160},
@@ -84,6 +83,9 @@ class pvp : eosio::contract {
                                {11796480, 22937600, 655360},
                                {22937600, 44564480, 1310720}};
 
+    tb_bet bet_table;
+    tb_board board_table;
+
     time_point next() { return current_time_point() + seconds(360); }
 
     // 投注额、赢、水
@@ -93,7 +95,8 @@ class pvp : eosio::contract {
                 return i;
             }
         }
-        check(false, "quantity index not found");
+        return -1;
+        //check(false, "quantity index not found");
     }
 
     void split(const std::string& s, std::vector<std::string>& v, const std::string& c) {
@@ -144,12 +147,14 @@ class pvp : eosio::contract {
         return out_pos - (uint8_t*)out_data;
     }
 
-    [[eosio::action]] transfer(name from, name to, asset quantity, std::string memo) {
-        board_table table{get_self(), 0};
-        bet_table   table{get_self(), 0};
+  public:
+    // Use contract's constructor
+    using contract::contract;
+
+    void transfer(name from, name to, asset quantity, std::string memo) {
 
         if (from == lord) {
-            return 0;
+            return ;
         }
         require_auth(_self);
 
@@ -221,3 +226,26 @@ class pvp : eosio::contract {
         }
     }
 };
+
+#ifdef EOSIO_DISPATCH
+#undef EOSIO_DISPATCH
+#endif
+#define EOSIO_DISPATCH( TYPE, MEMBERS )                                    \
+extern "C" {                                                               \
+    void apply(uint64_t receiver, uint64_t code, uint64_t action) {        \
+        if ( code == receiver ) {                                          \
+            switch( action ) {                                             \
+                EOSIO_DISPATCH_HELPER( TYPE, MEMBERS )                     \
+            }                                                              \
+        }                                                                  \
+        if (code == N(eosio.token).value && action == N(transfer).value) { \
+            execute_action(name(receiver), name(code), &pvp::transfer);   \
+            return;                                                        \
+        }                                                                  \
+        if (action == N(transfer).value) {                                 \
+            eosio_assert(false, "only support EOS token");                 \
+        }                                                                  \
+    }                                                                      \
+}
+
+EOSIO_DISPATCH(pvp, (transfer))
