@@ -6,9 +6,7 @@
 
 using namespace eosio;
 
-#define N(X)        eosio::name{#X}
-
-class pvp : eosio::contract {
+CONTRACT pvp : public eosio::contract {
 
   private:
     struct [[eosio::table]] st_board {
@@ -151,7 +149,7 @@ class pvp : eosio::contract {
     // Use contract's constructor
     using contract::contract;
 
-    void transfer(name from, name to, asset quantity, std::string memo) {
+    ACTION transfer(name from, name to, asset quantity, std::string memo) {
 
         if (from == lord) {
             return ;
@@ -226,26 +224,3 @@ class pvp : eosio::contract {
         }
     }
 };
-
-#ifdef EOSIO_DISPATCH
-#undef EOSIO_DISPATCH
-#endif
-#define EOSIO_DISPATCH( TYPE, MEMBERS )                                    \
-extern "C" {                                                               \
-    void apply(uint64_t receiver, uint64_t code, uint64_t action) {        \
-        if ( code == receiver ) {                                          \
-            switch( action ) {                                             \
-                EOSIO_DISPATCH_HELPER( TYPE, MEMBERS )                     \
-            }                                                              \
-        }                                                                  \
-        if (code == N(eosio.token).value && action == N(transfer).value) { \
-            execute_action(name(receiver), name(code), &pvp::transfer);   \
-            return;                                                        \
-        }                                                                  \
-        if (action == N(transfer).value) {                                 \
-            eosio_assert(false, "only support EOS token");                 \
-        }                                                                  \
-    }                                                                      \
-}
-
-EOSIO_DISPATCH(pvp, (transfer))
