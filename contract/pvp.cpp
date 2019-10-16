@@ -6,7 +6,7 @@
 
 using namespace eosio;
 
-class [[eosio::contract("pvp")]] pvp : public eosio::contract {
+class [[eosio::contract]] pvp : public contract {
 
   private:
     struct [[eosio::table]] st_board {
@@ -148,7 +148,10 @@ class [[eosio::contract("pvp")]] pvp : public eosio::contract {
   public:
     // Use contract's constructor
     using contract::contract;
-    pvp(name receiver, name code, datastream<const char *> ds):contract(receiver, code, ds), eosio::symbol("EOS", 4){}
+    pvp(name receiver, name code, datastream<const char*> ds)
+        : contract(receiver, code, ds),
+        board_table(receiver, receiver.value),
+        bet_table(receiver, receiver.value){}
 
     [[eosio::on_notify("eosio.token::transfer")]]
     void bet(name from, name to, asset quantity, std::string memo) {
