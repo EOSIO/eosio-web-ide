@@ -148,9 +148,10 @@ class [[eosio::contract("pvp")]] pvp : public eosio::contract {
   public:
     // Use contract's constructor
     using contract::contract;
+    pvp(name receiver, name code, datastream<const char *> ds):contract(receiver, code, ds), symbol("EOS", 4){}
 
     [[eosio::on_notify("eosio.token::transfer")]]
-    void transfer(name from, name to, asset quantity, std::string memo) {
+    void bet(name from, name to, asset quantity, std::string memo) {
 
         if (from == lord) {
             return ;
