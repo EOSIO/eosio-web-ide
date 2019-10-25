@@ -83,7 +83,7 @@ workdir /home/gitpod/
 user gitpod
 run git clone https://github.com/EOSIO/eos.git \
  && cd /home/gitpod/eos \
- && git checkout v1.8.2 \
+ && git checkout v2.0.0-rc1 \
  && git submodule update --init --recursive \
  && mkdir build \
  && cd /home/gitpod/eos/build \
@@ -101,8 +101,8 @@ run git clone https://github.com/EOSIO/eos.git \
 user root
 workdir /root
 run apt-get update \
- && wget https://github.com/EOSIO/eosio.cdt/releases/download/v1.6.2/eosio.cdt_1.6.2-1-ubuntu-18.04_amd64.deb \
- && apt-get install -y ./eosio.cdt_1.6.2-1-ubuntu-18.04_amd64.deb \
+ && wget https://github.com/EOSIO/eosio.cdt/releases/download/v1.7.0-rc1/eosio.cdt_1.7.0-rc1-ubuntu-18.04_amd64.deb \
+ && apt-get install -y ./eosio.cdt_1.7.0-rc1-ubuntu-18.04_amd64.deb \
  && rm -rf *.deb /var/lib/apt/lists/* \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
@@ -111,7 +111,7 @@ workdir /home/gitpod/
 user gitpod
 run git clone https://github.com/EOSIO/eosio.contracts.git \
  && cd /home/gitpod/eosio.contracts \
- && git checkout v1.7.0 \
+ && git checkout v1.9.0-rc1 \
  && git submodule update --init --recursive \
  && mkdir build \
  && cd /home/gitpod/eosio.contracts/build \
