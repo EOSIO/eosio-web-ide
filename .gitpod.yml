@@ -13,7 +13,7 @@ ports:
   onOpen: ignore
 
 tasks:
-- before: cd webapp
+- before: cd example/webapp
   init: yarn
   command: nginx -c $PWD/nginx.conf; npx webpack-dev-server
 - before: cleos wallet unlock --password </password

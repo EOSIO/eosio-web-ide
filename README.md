@@ -18,6 +18,12 @@ We hope you will find this project useful and welcome feedback on future improve
 
 You can test drive the system by accessing the IDE at https://gitpod.io/#https://github.com/EOSIO/eosio-web-ide (however you will not be able to save your work into the EOSIO/eosio-web-ide Github repository)
 
+## Developers Getting Started
+
+You can additionally follow along with the Getting Started guide found on https://developers.eos.io with the folders and files under the `getting_started` folder.
+
+Each folder has the files associated with the section of the Getting Started guide, as well as a `README.md` file with a link directing to the section.
+
 # Instructions
 
 The following instructions assume that the Web IDE was started successfully (see [Setup](#setup)).
@@ -28,10 +34,10 @@ To open a terminal, use the Terminal drop-down menu in the IDE user interface.
 
 ## Building sample contract
 
-The source code for the sample smartcontract is at `contract/talk.cpp` within the IDE. To compile the contract, run this in a terminal:
+The source code for the sample smart contract is at `example/contract/talk.cpp` within the IDE. To compile the contract, run this in a terminal:
 
 ```
-eosio-cpp contract/talk.cpp
+eosio-cpp example/contract/talk.cpp
 
 ```
 
@@ -70,7 +76,7 @@ cleos get table talk '' message
 
 ## Viewing the front-end decentralized web app (EOSJS):
 
-The source code for the React WebApp is at `webapp/src/index.tsx` within the IDE. To preview the WebApp run this in a terminal:
+The source code for the React WebApp is at `example/webapp/src/index.tsx` within the IDE. To preview the WebApp run this in a terminal:
 
 ```
 gp preview $(gp url 8000)
@@ -79,7 +85,7 @@ gp preview $(gp url 8000)
 
 ## Building and running the unit test
 
-The source code for the unit test is at the `tests` directory within the IDE. To build the tests, run this in the terminal:
+The source code for the unit test is at the `example/tests` directory within the IDE. To build the tests, run this in the terminal:
 
 ```
 ./build-tests
