@@ -1,4 +1,4 @@
-# docker build -t eosio/eosio-web-ide:v0.1.0 -f eosio-web-ide.dockerfile .
+# docker build -t eosio/eosio-web-ide:v0.1.1 -f eosio-web-ide.dockerfile .
 
 from ubuntu:18.04
 
@@ -20,7 +20,7 @@ run yes | unminimize \
      libgmp3-dev \
      libssl-dev \
      libusb-1.0-0-dev \
-     llvm-4.0 \
+     llvm-7-dev \
      locales \
      man-db \
      multitail \
@@ -63,13 +63,13 @@ run curl -LO https://cmake.org/files/v3.13/cmake-3.13.2.tar.gz \
  && rm -rf cmake-3.13.2.tar.gz cmake-3.13.2
 
 ### boost
-run curl -LO https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.tar.bz2 \
- && tar -xjf boost_1_70_0.tar.bz2 \
- && cd boost_1_70_0 \
+run curl -LO https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2 \
+ && tar -xjf boost_1_72_0.tar.bz2 \
+ && cd boost_1_72_0 \
  && ./bootstrap.sh --prefix=/usr/local \
  && ./b2 --with-iostreams --with-date_time --with-filesystem --with-system --with-program_options --with-chrono --with-test -j$(nproc) install \
  && cd /root \
- && rm -rf boost_1_70_0.tar.bz2 boost_1_70_0
+ && rm -rf boost_1_72_0.tar.bz2 boost_1_71_0
 
 ### Gitpod user
 # '-l': see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
@@ -83,7 +83,7 @@ workdir /home/gitpod/
 user gitpod
 run git clone https://github.com/EOSIO/eos.git \
  && cd /home/gitpod/eos \
- && git checkout v2.0.0-rc1 \
+ && git checkout v2.0.0 \
  && git submodule update --init --recursive \
  && mkdir build \
  && cd /home/gitpod/eos/build \
@@ -101,17 +101,18 @@ run git clone https://github.com/EOSIO/eos.git \
 user root
 workdir /root
 run apt-get update \
- && wget https://github.com/EOSIO/eosio.cdt/releases/download/v1.7.0-rc1/eosio.cdt_1.7.0-rc1-ubuntu-18.04_amd64.deb \
- && apt-get install -y ./eosio.cdt_1.7.0-rc1-ubuntu-18.04_amd64.deb \
+ && wget https://github.com/EOSIO/eosio.cdt/releases/download/v1.7.0/eosio.cdt_1.7.0-1-ubuntu-18.04_amd64.deb \
+ && apt-get install -y ./eosio.cdt_1.7.0-1-ubuntu-18.04_amd64.deb \
  && rm -rf *.deb /var/lib/apt/lists/* \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 
 ### contracts
+# add-boot-contract branch until v1.10.0
 workdir /home/gitpod/
 user gitpod
 run git clone https://github.com/EOSIO/eosio.contracts.git \
  && cd /home/gitpod/eosio.contracts \
- && git checkout v1.9.0-rc1 \
+ && git checkout add-boot-contract \
  && git submodule update --init --recursive \
  && mkdir build \
  && cd /home/gitpod/eosio.contracts/build \
