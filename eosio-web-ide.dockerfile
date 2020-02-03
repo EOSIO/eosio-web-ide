@@ -1,4 +1,4 @@
-# docker build -t eosio/eosio-web-ide:v0.1.1 -f eosio-web-ide.dockerfile .
+# docker build -t eosio/eosio-web-ide:v0.1.2 -f eosio-web-ide.dockerfile .
 
 from ubuntu:18.04
 
@@ -6,43 +6,26 @@ from ubuntu:18.04
 run yes | unminimize \
  && apt-get update \
  && apt-get install -yq \
-     asciidoctor \
-     bash-completion \
      build-essential \
-     clang-tools-8 \
      curl \
      g++-8 \
      git \
-     htop \
      jq \
      less \
-     libcurl4-gnutls-dev \
-     libgmp3-dev \
-     libssl-dev \
-     libusb-1.0-0-dev \
-     llvm-7-dev \
      locales \
-     man-db \
-     multitail \
      nano \
      nginx \
      ninja-build \
-     pkg-config \
      python \
-     software-properties-common \
      sudo \
-     supervisor \
      vim \
      wget \
-     xz-utils \
-     zlib1g-dev \
  && update-alternatives --remove-all cc \
  && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-8 100 \
  && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100 \
  && update-alternatives --remove-all c++ \
  && update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-8 100 \
  && update-alternatives --install /usr/bin/gcc++ gcc++ /usr/bin/g++-8 100 \
- && update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-8 100 \
  && locale-gen en_US.UTF-8 \
  && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
  && apt-get install -yq \
@@ -62,15 +45,6 @@ run curl -LO https://cmake.org/files/v3.13/cmake-3.13.2.tar.gz \
  && cd /root \
  && rm -rf cmake-3.13.2.tar.gz cmake-3.13.2
 
-### boost
-run curl -LO https://dl.bintray.com/boostorg/release/1.72.0/source/boost_1_72_0.tar.bz2 \
- && tar -xjf boost_1_72_0.tar.bz2 \
- && cd boost_1_72_0 \
- && ./bootstrap.sh --prefix=/usr/local \
- && ./b2 --with-iostreams --with-date_time --with-filesystem --with-system --with-program_options --with-chrono --with-test -j$(nproc) install \
- && cd /root \
- && rm -rf boost_1_72_0.tar.bz2 boost_1_71_0
-
 ### Gitpod user
 # '-l': see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
 run useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
@@ -79,23 +53,11 @@ run useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
 env HOME=/home/gitpod
 
 ### eosio
-workdir /home/gitpod/
-user gitpod
-run git clone https://github.com/EOSIO/eos.git \
- && cd /home/gitpod/eos \
- && git checkout v2.0.0 \
- && git submodule update --init --recursive \
- && mkdir build \
- && cd /home/gitpod/eos/build \
- && cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr .. \
- && ninja \
- && sudo ninja install \
- && sudo ln -s /usr/lib/x86_64-linux-gnu/cmake/eosio/ /usr/lib/cmake/eosio \
- && cd /home/gitpod \
- && mv /home/gitpod/eos/build/unittests/contracts /home/gitpod/contracts \
- && rm -rf /home/gitpod/eos \
- && mkdir -p /home/gitpod/eos/build/unittests/ \
- && mv /home/gitpod/contracts /home/gitpod/eos/build/unittests/
+user root
+workdir /root
+run apt-get update \
+ && wget https://github.com/EOSIO/eos/releases/download/v2.0.0/eosio_2.0.0-1-ubuntu-18.04_amd64.deb \
+ && apt install -y ./eosio_2.0.0-1-ubuntu-18.04_amd64.deb
 
 ### CDT
 user root
