@@ -19,6 +19,7 @@ class talk : eosio::contract {
   public:
     // Use contract's constructor
     using contract::contract;
+    // hello
 
     // Post a message
     [[eosio::action]] void post(uint64_t id, uint64_t reply_to, eosio::name user, const std::string& content) {
