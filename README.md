@@ -127,6 +127,10 @@ Note: if the web app is currently open, then it will cause errors like the follo
 FC Exception encountered while processing chain.get_table_rows
 ```
 
+主要针对智能合约的开发与维护。
+```
+```
+
 ## Contributing
 
 [Contributing Guide](./CONTRIBUTING.md)
