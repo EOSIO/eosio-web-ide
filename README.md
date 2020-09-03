@@ -10,7 +10,7 @@ We built this project with ease of use and simplicity in mind. It can be used by
 
 We hope you will find this project useful and welcome feedback on future improvements.
 
-# Setup
+# Setupddd
 
 1. Fork this repo to your personal GitHub account so that you can save your work into your personal Github account.
 
