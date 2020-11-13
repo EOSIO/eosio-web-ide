@@ -118,25 +118,129 @@ public:
     require_recipient(user);
   }
 
-  //Inserts new patient
-  //Assumes new contact, emergency, and vital
+  //Inserts new contact
+  //Only called within insert_patient() and insert_emergency()
   //User = Medical pro (Admin)
   [[eosio::action]] //Needed for ABI generation
-  void insert(name user, 
+  uint64_t insert_contact(name user, 
+                  string address, 
+                  string phone,
+                  string email) {
+      //Ensures the account executing transaction has proper permissions
+      require_auth(user);
+      
+      contact_id contact(get_self(), get_first_receiver().value);
+
+      res_ID = 0
+      contact.emplace(user, [&](auto& row) {
+          row.Contact_ID = contact.available_primary_key();
+          row.Address = address;
+          row.Phone = phone;
+          row.DOB = dob;
+          res_ID = row.Contact_ID
+      });
+      print("Contact is created on: ", now());
+      send_summary(user, " successfully inserted contact");
+    return res_ID;
+  }
+
+  //Inserts new emergency contact
+  //User = Medical pro (Admin)
+  [[eosio::action]] //Needed for ABI generation
+  uint64_t insert_emergency(name user, 
+                            string emergency, 
+                            string relationship, 
+                            string e_address, 
+                            string e_phone, 
+                            string e_email) {
+      //Ensures the account executing transaction has proper permissions
+      require_auth(user);
+      
+      res_ID = 0
+      emergency.emplace(user, [&](auto& row) {
+          row.Emergency_ID = emergency.available_primary_key();
+          row.Name = emergency;
+          row.Relationship = relationship;
+          row.Contact_ID = insert_contact(user, e_address, e_phone, e_email);
+          res_ID = row.Emergency_ID
+      });
+      print("Emergency contact is created on: ", now());
+      send_summary(user, " successfully inserted emergency contact");
+    return res_ID;
+  }
+
+  //Inserts new medical pro
+  [[eosio::action]] //Needed for ABI generation
+  uint64_t insert_primary(name user, 
+                            name primary, 
+                            string hours, 
+                            string p_address, 
+                            string p_phone, 
+                            string p_email) {
+      //Ensures the account executing transaction has proper permissions
+      require_auth(user);
+      
+      res_ID = 0
+      medical.emplace(user, [&](auto& row) {
+          row.Admin_ID = medical.available_primary_key();
+          row.Name = primary;
+          row.Hours = hours;
+          row.Contact_ID = insert_contact(user, p_address, p_phone, p_email);
+          res_ID = row.Admin_ID
+      });
+      print("Primary contact is created on: ", now());
+      send_summary(user, " successfully inserted primary contact");
+    return res_ID;
+  }
+
+  //Inserts new vitals
+  [[eosio::action]] //Needed for ABI generation
+  uint64_t insert_vitals(name user) {
+      //Ensures the account executing transaction has proper permissions
+      require_auth(user);
+      
+      res_ID = 0
+      vital.emplace(user, [&](auto& row) {
+          row.Vital_ID = vital.available_primary_key();
+          row.BodyTemp = 0.0;
+          row.PulseRate = 0.0;
+          row.RespirationRate = 0.0;
+          row.BloodPressure = 0.0;
+          row.LastModified = now();
+          res_ID = row.Vital_ID
+      });
+      print("Vitals created on: ", now());
+      send_summary(user, " successfully inserted vitals");
+    return res_ID;
+  }
+  
+  
+  //Inserts new patient
+  //Assumes new contact, emergency, and vital
+  //User = Medical pro (Admin) and is already added
+  [[eosio::action]] //Needed for ABI generation
+  void insert_patient(name user, 
                   name patient,
                   string gender, 
                   string dob, 
                   string address, 
                   string phone,
-                  string email
+                  string email,
                   string emergency,
-                  string relationship) {
+                  string relationship,
+                  string e_address,
+                  string e_phone,
+                  string e_email) {
       //Ensures the account executing transaction has proper permissions
       require_auth(user);
       
-      //TODO Insert Contact
-      //TODO Insert Emergency
-      //TODO Check for doctor ID
+      //Insert Contact
+      //uint64_t contact_id = insert_contact(user, address, phone, email);
+      
+      //Insert Emergency
+      //uint64_t emergency_id = insert_emergency(user, emergency, relationship, e_address, e_phone, e_email);
+      
+      //Check for doctor ID
       //TODO Insert to Vitals (initially 0) 
       /* Creates Table to index from
       *  first param specifies the owner of this table
@@ -160,6 +264,10 @@ public:
                 row.Name = patient;
                 row.Gender = gender;
                 row.DOB = dob;
+                row.Contact_ID = insert_contact(user, address, phone, email);
+                row.Emergency_ID = insert_emergency(user, emergency, relationship, e_address, e_phone, e_email);
+                row.Primary_ID = //TODO Search
+                row.Vital_ID = insert_vitals(user);
             });
             print("Patient: ",patient" is created on: ", now());
             send_summary(user, " successfully inserted patient");
