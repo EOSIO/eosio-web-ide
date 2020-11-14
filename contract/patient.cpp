@@ -30,8 +30,10 @@ private:
       return Patient_ID;
     }
 
-    //TODO Make Name secondary index
-    
+    //Sets secondary key to be the name
+    uiint64_t secondary_key() const {
+      return Name.value;
+    }
   };
 
   //Contact Information
@@ -74,6 +76,10 @@ private:
       return Admin_ID;
     }
     
+    //Sets secondary key to be the Name
+    uint64_t secondary_key() const {
+      return Name.value;
+    }
   };
 
   //Patient Vital Information
@@ -105,6 +111,18 @@ private:
       std::make_tuple(user, name{user}.to_string() + message)
     ).send();
   };
+
+  /*_n is the name of the table
+  * takes in a name value
+  */
+  typedef eosio::multi_index<"patient"_n, patient,  
+      indexed_by<"seckey"_n, const_mem_fun<patient, uint64_t, &patient::secondary_key>>> patient_index;
+  
+  /*_n is the name of the table
+  * takes in a name value
+  */
+  typedef eosio::multi_index<"medical"_n, medical,  
+      indexed_by<"seckey"_n, const_mem_fun<medical, uint64_t, &medical::secondary_key>>> medical_index;
 
 
 public:
@@ -202,10 +220,10 @@ public:
       res_ID = 0
       vital.emplace(user, [&](auto& row) {
           row.Vital_ID = vital.available_primary_key();
-          row.BodyTemp = 0.0;
-          row.PulseRate = 0.0;
-          row.RespirationRate = 0.0;
-          row.BloodPressure = 0.0;
+          row.BodyTemp = 98.6; // Fahrenheit
+          row.PulseRate = 60.0; // BPM
+          row.RespirationRate = 12.0; //Breaths per minute
+          row.BloodPressure = 120.0; //mm HG
           row.LastModified = now();
           res_ID = row.Vital_ID
       });
@@ -234,14 +252,6 @@ public:
       //Ensures the account executing transaction has proper permissions
       require_auth(user);
       
-      //Insert Contact
-      //uint64_t contact_id = insert_contact(user, address, phone, email);
-      
-      //Insert Emergency
-      //uint64_t emergency_id = insert_emergency(user, emergency, relationship, e_address, e_phone, e_email);
-      
-      //Check for doctor ID
-      //TODO Insert to Vitals (initially 0) 
       /* Creates Table to index from
       *  first param specifies the owner of this table
       *     in this case the name of the contract
@@ -251,13 +261,13 @@ public:
       patient_index patient(get_self(), get_first_receiver().value);
 
       //Iterator for patient using patient_id as key
-      uint128_t  key_int = 0//(spot_id*1000000000)+(time_code*1000)+zone_id; 
+      uint64_t  key_int = name.value
       
       //Iterate with secondary key
-      //auto secparkdeck = parkdeck.get_index<name("seckey")>();
+      auto secpatient = patient.get_index<name("seckey")>();
       
       auto iterator = secpatient.find(key_int);
-      if( iterator == secparkdeck.end()) {
+      if( iterator == secpatient.end()) {
             //The parking spot isn't in the table
             patient.emplace(user, [&](auto& row) {
                 row.Patient_ID = patient.available_primary_key();
@@ -266,7 +276,7 @@ public:
                 row.DOB = dob;
                 row.Contact_ID = insert_contact(user, address, phone, email);
                 row.Emergency_ID = insert_emergency(user, emergency, relationship, e_address, e_phone, e_email);
-                row.Primary_ID = //TODO Search
+                row.Primary_ID = getMedicalID(user);
                 row.Vital_ID = insert_vitals(user);
             });
             print("Patient: ",patient" is created on: ", now());
@@ -278,52 +288,115 @@ public:
         }
   }
 
-  //Erases parking spot 
+  //Erases Contact
+  void erase_contact(name user, uint64_t contact_val) {
+      contact_index contact(get_self(), get_first_receiver().value);
+      contact.erase(contact.find(contact_val));
+  }
+
+  //Erases Contact
+  void erase_emergency(name user, uint64_t emergency_val) {
+      emergency_index emergency(get_self(), get_first_receiver().value);
+      erase_contact(user, emergency_val->Contact_ID);
+      emergency.erase(emergency.find(emergency_val));
+  }
+
+  //Erases Vital
+  void erase_vital(name user, uint64_t vital_val) {
+      vital_index vital(get_self(), get_first_receiver().value);
+      vital.erase(vital.find(vital_val));
+  }
+
+  //Erases patient
+  //Will also erase corresponding contact, emergency and vitals
   [[eosio::action]]
-  void erase(name user, uint16_t spot_id, uint16_t zone_id, uint64_t time_code) {
+  void erase_patient(name user, name patient) {
     require_auth(user);
 
-    park_index parkdeck(get_self(), get_first_receiver().value);
+    patient_index patient(get_self(), get_first_receiver().value);
 
-    //Iterator for parking spots using spot_id as key
-    uint128_t  key_int = (spot_id*10000000000000)+(time_code*1000)+zone_id; 
-
-
+    //Iterator for patient using patient_id as key
+    uint64_t  key_int = name.value
+    
     //Iterate with secondary key
-    auto secparkdeck = parkdeck.get_index<name("seckey")>();
-    auto iterator = secparkdeck.find(key_int);
+    auto secpatient = patient.get_index<name("seckey")>();
+    
+    auto iterator = secpatient.find(key_int);
 
-    if( iterator == secparkdeck.end() ) {
-          //The parking spot isn't in the table
-          //    check(iterator != addresses.end(), "Record does not exist");
-          print("DOES NOT EXIST! Parking Spot: ", spot_id, " in Zone: ", zone_id);
+    if( iterator == secpatient.end() ) {
+          print("DOES NOT EXIST! Patient: ", patient);
       }
       else {
-          secparkdeck.erase(iterator);
-          print("REMOVED Parking Spot: ", spot_id, "  on: ", now());
-          send_summary(user, " successfully removed parking spot");
+          erase_contact(user, iterator->Contact_ID);
+          erase_emergency(user, iterator->Emergency_ID);
+          erase_vital(user, iterator->Vital_ID)
+          secpatient.erase(iterator);
+          print("REMOVED Patient: ", patient, "  on: ", now());
+          send_summary(user, " successfully removed patient");
 
       }
-    
   }
 
-    //Erases parking spot 
-  [[eosio::action]]
-  void clear(name user) {
+  // //Erases parking spot 
+  // [[eosio::action]]
+  // void clear(name user) {
+  //   require_auth(user);
+
+  //   park_index patient(get_self(), get_first_receiver().value);
+  //   auto it = patient.begin();
+  //   while (it != patient.end()) {
+  //       it = patient.erase(it);
+  //   }
+  // }
+ 
+  //Returns the MedicalID of a user
+  uint64_t getMedicalID(name user) {
     require_auth(user);
 
-    park_index patient(get_self(), get_first_receiver().value);
-    auto it = patient.begin();
-    while (it != patient.end()) {
-        it = patient.erase(it);
-    }
-    //TODO Clear Contacts
-    //TODO Clear Emergency
-    //TODO Clear Medical Professional
-    //TODO Clear Vitals
-    
+    medical_index medical(get_self(), get_first_receiver().value);
+
+    //Iterator for parking spots using spot_id as key
+    uint64_t  key_int = name.value; 
+
+    //Iterate with secondary key
+    auto secmedical = medical.get_index<name("seckey")>();
+    auto iterator = secmedical.find(key_int);
+
+    return iterator->Admin_ID;
   }
 
-  //TODO Corresponding Updates
+  //TODO Contact Update, Emergency Update
+  //Erases patient
+  //Will also erase corresponding contact, emergency and vitals
+  [[eosio::action]]
+  void mod_patient_vital(name user, 
+                         name patient,    
+                         float64 newBodyTemp,
+                         float64 newPulseRate,
+                         float64 newRespirationRate,
+                         float64 newBloodPressure) {
+    require_auth(user);
 
+    patient_index patient(get_self(), get_first_receiver().value);
+
+    //Iterator for patient using patient_id as key
+    uint64_t  key_int = name.value
+    
+    //Iterate with secondary key
+    auto secpatient = patient.get_index<name("seckey")>();
+    
+    auto iterator = secpatient.find(key_int);
+
+    if( iterator == secpatient.end() ) {
+          print("DOES NOT EXIST! Patient: ", patient);
+      }
+      else {
+          erase_contact(user, iterator->Contact_ID);
+          erase_emergency(user, iterator->Emergency_ID);
+          erase_vital(user, iterator->Vital_ID)
+          secpatient.erase(iterator);
+          print("UPDATED Patient Vitals: Body Temp: ", newBodyTemp, "\nPulse Rate: ", newPulseRate , "\nRespiration Rate: ", newRespirationRate, "\nBlood Pressure: ", newBloodPressure, "\non: ", now());
+          send_summary(user, " successfully updated patient vitals");
+      }
+  }
 };
