@@ -28,23 +28,23 @@ To open a terminal, use the Terminal drop-down menu in the IDE user interface.
 
 ## Building sample contract
 
-The source code for the sample smartcontract is at `contract/talk.cpp` within the IDE. To compile the contract, run this in a terminal:
+The source code for the sample smartcontract is at `contract/patient.cpp` within the IDE. To compile the contract, run this in a terminal:
 
 ```
-eosio-cpp contract/talk.cpp
+eosio-cpp contract/patient.cpp
 
 ```
 
-This will produce `talk.abi` and `talk.wasm`.
+This will produce `patient.abi` and `patient.wasm`.
 
 ## Installing the contract
 
 Run this in a terminal:
 
 ```
-cleos create account eosio talk EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
-cleos set code talk talk.wasm
-cleos set abi talk talk.abi
+cleos create account eosio patient EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
+cleos set code patient patient.wasm
+cleos set abi patient patient.abi
 
 ```
 
@@ -54,17 +54,14 @@ Run this in a terminal:
 ```
 cleos create account eosio bob EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
 cleos create account eosio jane EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV
-cleos push action talk post '[1000, 0, bob, "This is a new post"]' -p bob
-cleos push action talk post '[2000, 0, jane, "This is my first post"]' -p jane
-cleos push action talk post '[1001, 2000, bob, "Replying to your post"]' -p bob
-
+cleos push action patient addpatient '[patient, jane, "female", "01/01/2020", "123 Street", "555-555-5555", "janeD@gmail.com", "joe", "spouse", "123 Street", "314-159-2653","joeD@gmail.com"]' -p patient
 ```
 
 ## Listing the messages
 
 Run this in a terminal:
 ```
-cleos get table talk '' message
+cleos get table patient '' patients
 
 ```
 
