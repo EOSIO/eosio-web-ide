@@ -8,20 +8,18 @@ import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 
 const rpc = new JsonRpc(''); // nodeos and web server are on same port
 
-interface PostData {
-    id?: number;
-    user?: string;
-    reply_to?: number;
-    content?: string;
+interface CreateData {
+    issuer?: string;
+    maximum_supply?: string;
 };
 
-interface PostFormState {
+interface CreateFormState {
     privateKey: string;
-    data: PostData;
+    data: CreateData;
     error: string;
 };
 
-class PostForm extends React.Component<{}, PostFormState> {
+class CreateForm extends React.Component<{}, CreateFormState> {
     api: Api;
 
     constructor(props: {}) {
@@ -30,16 +28,14 @@ class PostForm extends React.Component<{}, PostFormState> {
         this.state = {
             privateKey: '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3',
             data: {
-                id: 0,
-                user: 'bob',
-                reply_to: 0,
-                content: 'This is a test'
+                issuer: 'integral',
+                maximum_supply: "1000000.0000 INT"
             },
             error: '',
         };
     }
 
-    setData(data: PostData) {
+    setData(data: CreateData) {
         this.setState({ data: { ...this.state.data, ...data } });
     }
 
@@ -49,10 +45,10 @@ class PostForm extends React.Component<{}, PostFormState> {
             const result = await this.api.transact(
                 {
                     actions: [{
-                        account: 'talk',
-                        name: 'post',
+                        account: 'integral',
+                        name: 'create',
                         authorization: [{
-                            actor: this.state.data.user,
+                            actor: 'integral',
                             permission: 'active',
                         }],
                         data: this.state.data,
@@ -84,33 +80,135 @@ class PostForm extends React.Component<{}, PostFormState> {
                         /></td>
                     </tr>
                     <tr>
-                        <td>User</td>
+                        <td>Issuer</td>
                         <td><input
                             style={{ width: 500 }}
-                            value={this.state.data.user}
-                            onChange={e => this.setData({ user: e.target.value })}
+                            value={this.state.data.issuer}
+                            onChange={e => this.setData({ issuer: e.target.value })}
                         /></td>
                     </tr>
                     <tr>
-                        <td>Reply To</td>
+                        <td>Maximum_supply</td>
                         <td><input
                             style={{ width: 500 }}
-                            value={this.state.data.reply_to}
-                            onChange={e => this.setData({ reply_to: +e.target.value })}
+                            value={this.state.data.maximum_supply}
+                            onChange={e => this.setData({ maximum_supply: e.target.value })}
+                        /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+            <button onClick={e => this.post()}>Create</button>
+            {this.state.error && <div>
+                <br />
+                Error:
+                <code><pre>{this.state.error}</pre></code>
+            </div>}
+        </div>;
+    }
+}
+
+interface IssueData {
+    to?: string;
+    quantity?: string;
+    memo?: string;
+};
+
+interface IssueFormState {
+    privateKey: string;
+    data: IssueData;
+    error: string;
+};
+
+class IssueForm extends React.Component<{}, IssueFormState> {
+    api: Api;
+
+    constructor(props: {}) {
+        super(props);
+        this.api = new Api({ rpc, signatureProvider: new JsSignatureProvider([]) });
+        this.state = {
+            privateKey: '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3',
+            data: {
+                to: 'alice',
+                quantity: "100.0000 INT",
+                memo: "m"
+            },
+            error: '',
+        };
+    }
+
+    setData(data: IssueData) {
+        this.setState({ data: { ...this.state.data, ...data } });
+    }
+
+    async post() {
+        try {
+            this.api.signatureProvider = new JsSignatureProvider([this.state.privateKey]);
+            const result = await this.api.transact(
+                {
+                    actions: [{
+                        account: this.state.data.to,
+                        name: 'create',
+                        authorization: [{
+                            actor: this.state.data.to,
+                            permission: 'active',
+                        }],
+                        data: this.state.data,
+                    }]
+                }, {
+                    blocksBehind: 3,
+                    expireSeconds: 30,
+                });
+            console.log(result);
+            this.setState({ error: '' });
+        } catch (e) {
+            if (e.json)
+                this.setState({ error: JSON.stringify(e.json, null, 4) });
+            else
+                this.setState({ error: '' + e });
+        }
+    }
+
+    render() {
+        return <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Private Key</td>
+                        <td><input
+                            style={{ width: 500 }}
+                            value={this.state.privateKey}
+                            onChange={e => this.setState({ privateKey: e.target.value })}
+                        /></td>
+                    </tr>
+                    <tr>
+                        <td>To</td>
+                        <td><input
+                            style={{ width: 500 }}
+                            value={this.state.data.to}
+                            onChange={e => this.setData({ to: e.target.value })}
+                        /></td>
+                    </tr>
+                    <tr>
+                        <td>quantity</td>
+                        <td><input
+                            style={{ width: 500 }}
+                            value={this.state.data.quantity}
+                            onChange={e => this.setData({ quantity: e.target.value })}
                         /></td>
                     </tr>
                     <tr>
                         <td>Content</td>
                         <td><input
                             style={{ width: 500 }}
-                            value={this.state.data.content}
-                            onChange={e => this.setData({ content: e.target.value })}
+                            value={this.state.data.memo}
+                            onChange={e => this.setData({ memo: e.target.value })}
                         /></td>
                     </tr>
                 </tbody>
             </table>
             <br />
-            <button onClick={e => this.post()}>Post</button>
+            <button onClick={e => this.post()}>Issue</button>
             {this.state.error && <div>
                 <br />
                 Error:
@@ -165,7 +263,9 @@ class Messages extends React.Component<{}, { content: string }> {
 
 ReactDOM.render(
     <div>
-        <PostForm />
+        <CreateForm />
+        <br />
+        <IssueForm />
         <br />
         Messages:
         <Messages />
