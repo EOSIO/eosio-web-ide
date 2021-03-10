@@ -18,7 +18,7 @@ interface PostData {
 interface LikePostData {
     id? :number;
     user?: string;
-    reply_to?: number;
+    post_id?: number;
     react?: number;
 };
 
@@ -48,7 +48,7 @@ class PostForm extends React.Component<{}, PostFormState> {
             likeData: {
                 id: 0,
                 user: 'bob',
-                reply_to: 0,
+                post_id: 0,
                 react: 1,
             },
             error: '',
@@ -177,11 +177,11 @@ class PostForm extends React.Component<{}, PostFormState> {
                         /></td>
                     </tr>
                     <tr>
-                        <td>Reply To</td>
+                        <td>Post ID</td>
                         <td><input
                             style={{ width: 500 }}
-                            value={this.state.likeData.reply_to}
-                            onChange={e => this.setLikeData({ reply_to: +e.target.value })}
+                            value={this.state.likeData.post_id}
+                            onChange={e => this.setLikeData({ post_id: +e.target.value })}
                         /></td>
                     </tr>
                     <tr>
@@ -259,7 +259,7 @@ class Likes extends React.Component<{}, { content: string }> {
         this.interval = window.setInterval(async () => {
             try {
                 let content =
-                    'id          reply_to      user          reaction                   \n' +
+                    'id          post_id       user          reaction                   \n' +
                     '===================================================================\n';
                 const likeRows = await rpc.get_table_rows({
                     json: true, code: 'talk', scope: '', table: 'likes', limit: 1000,
@@ -267,7 +267,7 @@ class Likes extends React.Component<{}, { content: string }> {
                 for (let row of likeRows.rows)
                     content +=
                         (row.id + '').padEnd(12) +
-                        (row.reply_to + '').padEnd(12) + '  ' +
+                        (row.post_id + '').padEnd(12) + '  ' +
                         row.user.padEnd(14) +
                         (row.react + '').padEnd(14) + '\n';                    
                 this.setState({ content });
