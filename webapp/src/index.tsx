@@ -548,18 +548,13 @@ class Messages extends React.Component<{}, { content: string }> {
     componentDidMount() {
         this.interval = window.setInterval(async () => {
             try {
-                const rows = await rpc.get_table_rows({
-                    json: true, code: 'talk', scope: '', table: 'message', limit: 1000,
-                });
-                let content =
-                    'id          reply_to      user          content\n' +
-                    '=============================================================\n';
-                for (let row of rows.rows)
-                    content +=
-                        (row.id + '').padEnd(12) +
-                        (row.reply_to + '').padEnd(12) + '  ' +
-                        row.user.padEnd(14) +
-                        row.content + '\n';
+                const rows = await rpc.get_currency_stats("integral","INT");
+                let content ='INT\n';
+                let row = rows["INT"];
+                content +=
+                        (row.supply + '').padEnd(12) +
+                        (row.max_supply + '').padEnd(12) + '  ' +
+                        row.issuer;
                 this.setState({ content });
             } catch (e) {
                 if (e.json)
@@ -583,15 +578,13 @@ class Messages extends React.Component<{}, { content: string }> {
 ReactDOM.render(
     <div>
         <CreateForm />
-        <br />
-        <IssueForm />
-        <br />
-        <ConsumeForm />
-        <br />
-        <ExchangeForm />
-        <br />
-        Messages:
-        <Messages />
     </div>,
-    document.getElementById("example")
+    document.getElementById("CreateForm")
 );
+
+ReactDOM.render(
+    <div>
+        <IssueForm />
+    </div>,
+    document.getElementById("IssueForm")
+)
