@@ -5,6 +5,10 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Api, JsonRpc, RpcError } from 'eosjs';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
+import { Tabs, Radio, Space } from 'antd';
+import 'antd/dist/antd.css';
+
+const { TabPane } = Tabs;
 
 const rpc = new JsonRpc(''); // nodeos and web server are on same port
 
@@ -576,15 +580,17 @@ class Messages extends React.Component<{}, { content: string }> {
 }
 
 ReactDOM.render(
-    <div>
-        <CreateForm />
-    </div>,
-    document.getElementById("CreateForm")
+    <Tabs>
+          <TabPane tab="Create" key="1">
+            <CreateForm />
+          </TabPane>
+          <TabPane tab="Tab 2" key="2">
+            <IssueForm />
+          </TabPane>
+          <TabPane tab="Tab 3" key="3">
+            <ExchangeForm />
+          </TabPane>
+        </Tabs>,
+    document.getElementById("tab")
 );
 
-ReactDOM.render(
-    <div>
-        <IssueForm />
-    </div>,
-    document.getElementById("IssueForm")
-)
