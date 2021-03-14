@@ -30,6 +30,8 @@ interface PostFormState {
     likeError: string;
 };
 
+const reactStr = ["", "likes", "loves", "lol", "sad", "angry"];
+
 
 class PostForm extends React.Component<{}, PostFormState> {
     api: Api;
@@ -49,7 +51,7 @@ class PostForm extends React.Component<{}, PostFormState> {
                 id: 0,
                 user: 'bob',
                 post_id: 0,
-                react: 1,
+                react: 0,
             },
             error: '',
             likeError: '',
@@ -269,7 +271,7 @@ class Likes extends React.Component<{}, { content: string }> {
                         (row.id + '').padEnd(12) +
                         (row.post_id + '').padEnd(12) + '  ' +
                         row.user.padEnd(14) +
-                        (row.react + '').padEnd(14) + '\n';                    
+                        reactStr[row.react].padEnd(14) + '\n';                    
                 this.setState({ content });
             } catch (e) {
                 if (e.json)
