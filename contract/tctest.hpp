@@ -22,7 +22,7 @@ namespace eosio {
     *
     * Similarly, the `stats` multi-index table, holds instances of `currency_stats` objects for each row, which contains information about current supply, maximum supply, and the creator account for a symbol token. The `stats` table is scoped to the token symbol.  Therefore, when one queries the `stats` table for a token symbol the result is one single entry/row corresponding to the queried symbol token if it was previously created, or nothing, otherwise.
     */
-   class [[eosio::contract("tctest")]] token : public contract {
+   class [[eosio::contract("tctctest")]] token : public contract {
       public:
          using contract::contract;
 
