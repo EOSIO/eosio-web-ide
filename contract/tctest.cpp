@@ -6,7 +6,7 @@ void token::create()
 {
     require_auth( get_self() );
 
-auto sym = symbol("TERROR", 4); // NEWT is the token symbol with precision 4
+auto sym = symbol("TERROR", 4);
      auto maximum_supply = asset(210000000000, sym);
 
     stats statstable( get_self(), sym.code().raw() );
