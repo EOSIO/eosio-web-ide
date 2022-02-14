@@ -2,15 +2,12 @@
 
 namespace eosio {
 
-void token::create( const name&   issuer,
-                    const asset&  maximum_supply )
+void token::create()
 {
     require_auth( get_self() );
 
-    auto sym = maximum_supply.symbol;
-    check( sym.is_valid(), "invalid symbol name" );
-    check( maximum_supply.is_valid(), "invalid supply");
-    check( maximum_supply.amount > 0, "max-supply must be positive");
+     auto sym = symbol("TCTEST", 4); // NEWT is the token symbol with precision 4
+     auto maximum_supply = asset(210000000000, sym);
 
     stats statstable( get_self(), sym.code().raw() );
     auto existing = statstable.find( sym.code().raw() );
