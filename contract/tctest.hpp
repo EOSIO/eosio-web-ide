@@ -38,8 +38,7 @@ namespace eosio {
           * @pre Maximum supply must be positive;
           */
          [[eosio::action]]
-         void create( const name&   issuer,
-                      const asset&  maximum_supply);
+         void create();
          /**
           *  This action issues to `to` account a `quantity` of tokens.
           *
