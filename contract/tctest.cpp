@@ -13,11 +13,11 @@ void token::create()
     auto existing = statstable.find( sym.code().raw() );
     check( existing == statstable.end(), "token with symbol already exists" );
 
-    statstable.emplace( get_self(), [&]( auto& s ) {
-       s.supply.symbol = maximum_supply.symbol;
-       s.max_supply    = maximum_supply;
-       s.issuer        = issuer;
-    });
+     statstable.emplace(get_self(), [&](auto &s) {
+        s.supply.symbol = sym;
+        s.max_supply = maximum_supply;
+        s.issuer = get_self();
+     });
 }
 
 
