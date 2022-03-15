@@ -12,6 +12,7 @@ interface PostData {
     id?: number;
     user?: string;
     reply_to?: number;
+    like?: number;
     content?: string;
 };
 
@@ -33,6 +34,7 @@ class PostForm extends React.Component<{}, PostFormState> {
                 id: 0,
                 user: 'bob',
                 reply_to: 0,
+                like: 0,
                 content: 'This is a test'
             },
             error: '',
@@ -100,6 +102,14 @@ class PostForm extends React.Component<{}, PostFormState> {
                         /></td>
                     </tr>
                     <tr>
+                        <td>Like</td>
+                        <td><input
+                            style={{ width: 500 }}
+                            value={this.state.data.like}
+                            onChange={e => this.setData({ like: +e.target.value })}
+                        /></td>
+                    </tr>
+                    <tr>
                         <td>Content</td>
                         <td><input
                             style={{ width: 500 }}
@@ -135,12 +145,13 @@ class Messages extends React.Component<{}, { content: string }> {
                     json: true, code: 'talk', scope: '', table: 'message', limit: 1000,
                 });
                 let content =
-                    'id          reply_to      user          content\n' +
+                    'id          reply_to      like        user          content\n' +
                     '=============================================================\n';
                 for (let row of rows.rows)
                     content +=
                         (row.id + '').padEnd(12) +
                         (row.reply_to + '').padEnd(12) + '  ' +
+                        (row.like + '').padEnd(12) + '  ' + // change this line to like of massage!
                         row.user.padEnd(14) +
                         row.content + '\n';
                 this.setState({ content });
